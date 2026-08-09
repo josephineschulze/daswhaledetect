@@ -1,0 +1,61 @@
+n_workers: 4
+
+paths:
+  npz_dir: "G:/daswhaledetect-josephine/test_Alex/test-list/"
+  output_dir: "G:/daswhaledetect-josephine/test_Alex/test-list/test-train/"
+  model_name: "rf_model"
+
+features:
+  feature_key: spectrum_after_detrended
+  freq_key: freqs
+  feature_length: 132   # 14-80 Hz in 0.5 Hz steps
+
+sampling:
+  random_state: 42
+  max_per_class: 133
+
+classes:
+  allowed_classes_raw:
+    - "20-40hz"
+    - "20hz"
+    - "40-70hz"
+    - "backbeat"
+    - "background noise"
+    - "bwab"
+    - "ds"
+    - "earthquake"
+    - "ship"
+
+  # raw CallType labels grouped into training classes
+  sweep_source_classes: ["ds", "40-70hz"]
+  pulse_source_classes: ["20hz"]
+  noise_source_classes: ["background noise", "ship", "earthquake"]
+
+  class_gates:   # minimum energy/SNR-type threshold per grouped class
+    sweeps:
+      min: 0.9
+    pulses:
+      min: 1.0
+    bwab:
+      min: 3.8
+    backbeat:
+      min: 1.6
+    "20-40hz":
+      min: 1.1
+
+model:
+  n_estimators: 100
+  max_depth: 10
+  min_samples_split: 4
+  min_samples_leaf: 2
+  max_features: "sqrt"
+  class_weight: "balanced_subsample"
+  bootstrap: true
+  oob_score: true
+
+plotting:
+  vmin: -1
+  vmax: 5
+  cmap: viridis
+  max_windows_per_fig: 500
+  fig_height: 6

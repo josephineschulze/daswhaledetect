@@ -1,9 +1,0 @@
-Metadata-Version: 2.4
-Name: daswhaledetect
-Version: 0.1.0
-Summary: DAS preprocessing pipeline (channel averaging, resampling, filtering, windowing)
-Requires-Python: >=3.9
-Requires-Dist: numpy
-Requires-Dist: scipy
-Requires-Dist: matplotlib
-Requires-Dist: h5py

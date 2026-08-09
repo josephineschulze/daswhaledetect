@@ -1,0 +1,29 @@
+paths:
+  model_path: "C:\\Users\\yl4486\\Documents\\Alex\\daswhaledetect-main\\daswhlaedetect-main\\rf_model.pkl"
+  unknown_npz_dir: "G:\\daswhaledetect-josephine\\test_Alex\\test-list\\dummy_training_list\\npz"
+  output_dir: "G:\\daswhaledetect-josephine\\test_Alex\\test-list\\dummy_training_list\\classification_RF"
+
+features:
+  feature_key: spectrum_after_detrended
+  freq_key: freqs
+  feature_length: 132
+
+plotting:
+  vmin: -1
+  vmax: 5
+  cmap: "viridis"
+  max_windows_per_fig: 500
+  fig_height: 6
+
+# maps raw CallType (normalized: lowercase, no spaces/underscores) -> RF class space
+# used only for evaluation against ground truth when it exists
+label_mapping:
+  "20hz": "pulses"            # fin whale
+  "backbeat": "backbeat"      # fin whale
+  "backgroundnoise": "noise"  # background noise
+  "20-40hz": "20-40hz"        # fin/blue sweeps
+  "40-70hz": "sweeps"         # fin/blue sweeps
+  "ds": "sweeps"              # fin/blue sweeps
+  "bwab": "bwab"              # blue whale A/B
+  "earthquake": "noise"
+  "ship": "noise"

@@ -1,0 +1,45 @@
+run_mode: list # "list" or "folder"
+interrogator: "asn"
+channel_range: [30000, 90000, 2]   # [start_m, end_m, step_channels]
+n_workers: 6
+output_root: "G:/daswhaledetect-josephine/test_Alex/test-list"
+  
+list_mode:
+  list_dir: "C:\\Users\\yl4486\\Documents\\Alex\\daswhaledetect-main\\annotations"
+  list_glob: "*.csv"
+  allow_npz_path_as_fallback_input: false
+
+
+folder_mode:
+  folder_path: "G:/daswhaledetect-josephine"
+  folder_glob: "*.hdf5"
+  start_dt: null        # e.g. "2025-10-12 14:00:00", or null for no lower bound
+  end_dt: null
+  run_label: "folder_run_20260728"
+
+features:
+  freq_min: 14
+  freq_max: 80
+  spectral_baseline_hz: 10.0
+  vel_min: 1400
+  vel_max: 6000
+  window_length_s: 2.0
+  window_overlap: 0.5
+  target_fs: 256.0
+  segment_length_m: 20000            # segment length for each sample in meters
+  min_channels_per_segment: 8        
+  suppress_bad_channels: true
+  suppress_mode: interp          # "zero" or "interp"
+  apply_bandpass: true
+  bandpass_order: 4
+  remove_common_mode: true
+  remove_channel_mean: true
+  save_pngs: true
+
+bad_channel_estimation:
+  n_sample_files_per_day: 50
+  random_seed: 42
+  block_length_s: 1
+  per_block_z_thresh: 5.0
+  per_file_block_fraction_thresh: 0.6
+  across_file_fraction_thresh: 0.25
