@@ -1,8 +1,8 @@
 n_workers: 4
 
 paths:
-  npz_dir: "G:/daswhaledetect-josephine/test_Alex/test-list/"
-  output_dir: "G:/daswhaledetect-josephine/test_Alex/test-list/test-train/"
+  npz_dir: "/path/to/npz_directory"
+  output_dir: "/path/to/output/directory"
   model_name: "rf_model"
 
 features:

@@ -12,9 +12,14 @@ import os
 import csv
 import traceback
 import argparse
-from daswhaledetect.dataload import discover_files_by_folder_and_time, discover_list_files, sanitize_filename, load_annotations_from_list_csv
-from daswhaledetect.features import estimate_bad_channels, feature_extract
 from daswhaledetect.utils import load_config_preprocess
+from daswhaledetect.dataload import (
+    discover_files_by_folder_and_time, 
+    discover_list_files, 
+    sanitize_filename, 
+    load_annotations_from_list_csv,
+)
+from daswhaledetect.features import estimate_bad_channels, feature_extract
 
 logger = logging.getLogger("preprocess")
 
@@ -66,10 +71,11 @@ def run_files_through_pipeline(valid_files, output_base, run_label, tasks_by_fil
     logger.info(f"Summary written to: {summary_txt}")
 
 
-def preprocess_folder(folder_path, folder_glob, output_root, cfg):
+def preprocess_folder(folder_dir, file_type, output_root, cfg):
     logger.info(f"time range: {cfg['folder_mode'].get('start_dt')} to {cfg['folder_mode'].get('end_dt')}")
     
-    files = discover_files_by_folder_and_time(folder_path, folder_glob, start_dt=cfg['folder_mode'].get('start_dt'), end_dt=cfg['folder_mode'].get('end_dt'))
+    files = discover_files_by_folder_and_time(folder_dir, file_type, start_dt=cfg['folder_mode'].get('start_dt'), end_dt=cfg['folder_mode'].get('end_dt'))
+
     if not files:
         logger.warning(f"No files found for the requested folder / time range.")
         return
@@ -140,16 +146,16 @@ def run_preprocessing(cfg):
     output_root = cfg["output_root"]
 
     if run_mode == "folder":
-        folder_path = cfg["folder_mode"]["folder_path"]
-        folder_glob = cfg["folder_mode"]["folder_glob"]
-        logger.info(f"Running in folder mode: {folder_path} with file type {folder_glob}")
-        preprocess_folder(folder_path, folder_glob, output_root, cfg)
+        directory = cfg["folder_mode"]["dir"]
+        file_type = cfg["folder_mode"]["file_type"]
+        logger.info(f"Running in folder mode: {directory} with file type {file_type}")
+        preprocess_folder(directory, file_type, output_root, cfg)
 
     elif run_mode == "list":
-        list_dir = cfg["list_mode"]["list_dir"]
-        list_glob = cfg["list_mode"]["list_glob"]
-        logger.info(f"Running in list mode: {list_dir} with glob {list_glob}")
-        preprocess_list(list_dir, list_glob, output_root, cfg)
+        directory = cfg["list_mode"]["dir"]
+        file_type = cfg["list_mode"]["file_type"]
+        logger.info(f"Running in list mode: {directory} with glob {file_type}")
+        preprocess_list(directory, file_type, output_root, cfg)
 
     else:
         raise ValueError(f"Unknown run_mode: {run_mode}")

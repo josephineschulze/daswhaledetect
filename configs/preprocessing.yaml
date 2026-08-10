@@ -2,20 +2,20 @@ run_mode: list # "list" or "folder"
 interrogator: "asn"
 channel_range: [30000, 90000, 2]   # [start_m, end_m, step_channels]
 n_workers: 6
-output_root: "G:/daswhaledetect-josephine/test_Alex/test-list"
+output_root: "/path/to/output_root"
   
 list_mode:
-  list_dir: "C:\\Users\\yl4486\\Documents\\Alex\\daswhaledetect-main\\annotations"
-  list_glob: "*.csv"
+  dir: "/path/to/list_mode_dir"
+  file_type: "*.csv"
   allow_npz_path_as_fallback_input: false
 
 
 folder_mode:
-  folder_path: "G:/daswhaledetect-josephine"
-  folder_glob: "*.hdf5"
+  dir: "/path/to/folder_mode_dir"
+  file_type: "*.hdf5"
   start_dt: null        # e.g. "2025-10-12 14:00:00", or null for no lower bound
   end_dt: null
-  run_label: "folder_run_20260728"
+  run_label: "folder_mode_run"
 
 features:
   freq_min: 14

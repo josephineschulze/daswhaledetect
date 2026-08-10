@@ -11,13 +11,17 @@ import scipy.signal as sp
 from scipy.ndimage import gaussian_filter1d
 from multiprocessing import Pool
 
-from training.dataset import sanitize_filename
 
-from daswhaledetect.plot import plot_bad_channel_fraction, plot_bad_channel_matrix, plot_spectrum_detrended, plot_fk_before_after
+from daswhaledetect.utils import sanitize_filename
 from daswhaledetect.dataload import (
-    sanitize_filename,
     parse_datetime_from_path,
     segment_matches_requested,
+)
+from daswhaledetect.evaluate import (
+    plot_bad_channel_fraction, 
+    plot_bad_channel_matrix, 
+    plot_spectrum_detrended, 
+    plot_fk_before_after
 )
 
 
@@ -305,7 +309,6 @@ def estimate_bad_channels(valid_files, bad_dir, diag_dir, cfg):
 
     for fp in valid_files:
         dt_file, _ = parse_datetime_from_path(fp)
-        print("file path",fp, dt_file)
         day = dt_file.strftime("%Y%m%d") if dt_file else "unknown"
         files_by_day[day].append(fp)
 

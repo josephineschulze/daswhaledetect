@@ -1,7 +1,7 @@
 paths:
-  model_path: "C:\\Users\\yl4486\\Documents\\Alex\\daswhaledetect-main\\daswhlaedetect-main\\rf_model.pkl"
-  unknown_npz_dir: "G:\\daswhaledetect-josephine\\test_Alex\\test-list\\dummy_training_list\\npz"
-  output_dir: "G:\\daswhaledetect-josephine\\test_Alex\\test-list\\dummy_training_list\\classification_RF"
+  model_path: "rf_model.pkl"
+  npz_dir: "/path/to/npz_dir"
+  output_dir: "/path/to/output_dir"
 
 features:
   feature_key: spectrum_after_detrended

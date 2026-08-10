@@ -23,20 +23,11 @@ from daswhaledetect.evaluate import (
     predict,
     save_prediction_tables,
     plot_stacked_spectra,
-    plot_confusion_matrix,
     attach_true_labels,
     build_eval_dataframe,
     compute_confusion_matrices,
     compute_per_class_metrics,
 )
-# from daswhaledetect.training.dataset import sanitize_filename
-# from daswhaledetect.training.evaluate import (
-#     compute_confusion_matrices,
-#     compute_per_class_metrics,
-#     plot_confusion_matrix,
-#     plot_stacked_spectra,
-# )
-
 
 logger = logging.getLogger("daswhale.predict")
 
@@ -51,7 +42,7 @@ def run_detection(cfg):
     logger.info("Loaded saved random forest from: %s", cfg["paths"]["model_path"])
     logger.info("Model classes: %s", rf.classes_)
 
-    unknown_df, skipped = load_unknown_npz(cfg["paths"]["unknown_npz_dir"], cfg["features"]["feature_key"], cfg["features"]["feature_length"])
+    unknown_df, skipped = load_unknown_npz(cfg["paths"]["npz_dir"], cfg["features"]["feature_key"], cfg["features"]["feature_length"])
     unknown_pred_df, group_pred_df, class_names = predict(rf, unknown_df)
 
     save_prediction_tables(unknown_pred_df, group_pred_df, skipped, output_dir)
@@ -105,6 +96,8 @@ def run_detection(cfg):
     # 4. evaluate against ground truth, if any labels are available
     unknown_pred_df = attach_true_labels(unknown_pred_df, cfg["label_mapping"])
     eval_df = build_eval_dataframe(unknown_pred_df, output_dir)
+    if eval_df is None:
+        return
     y_true = eval_df["true_class_mapped"]
     y_pred = eval_df["predicted_class"]
     labels_for_eval = list(rf.classes_)

@@ -282,6 +282,8 @@ def build_eval_dataframe(pred_df, output_dir):
 
     if len(eval_df) == 0:
         logger.warning("No rows with usable true labels for evaluation.")
+        logger.warning("DETECTION COMPLETE: no ground truth available.")
+        return None
     logger.info("Evaluable rows: %d / %d", len(eval_df), len(pred_df))
     return eval_df
 

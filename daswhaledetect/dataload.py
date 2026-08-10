@@ -119,7 +119,7 @@ def parse_segment_label_or_range(seg_value):
 
     return {"raw": s, "norm": norm, "start_m": None, "end_m": None}
 
-def discover_files_by_folder_and_time(folder, file_glob="*.hdf5", start_dt=None, end_dt=None):
+def discover_files_by_folder_and_time(folder_dir, file_type="*.hdf5", start_dt=None, end_dt=None):
     """
     finds raw DAS file directly in a folder, optionally restricts to a time range
 
@@ -132,7 +132,7 @@ def discover_files_by_folder_and_time(folder, file_glob="*.hdf5", start_dt=None,
     if isinstance(end_dt, str):
         end_dt = parse_dt(end_dt)
 
-    pattern = os.path.join(folder, "**", file_glob)
+    pattern = os.path.join(folder_dir, "**", file_type)
     candidates = sorted(glob(pattern, recursive=True))
 
     if start_dt is None and end_dt is None:

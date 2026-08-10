@@ -43,27 +43,27 @@ def load_config_preprocess(path):
 
     # ---------- input mode ----------
     if cfg["run_mode"] == "folder":
-        required = ["folder_path", "folder_glob"]
+        required = ["dir", "file_type"]
 
         for key in required:
             if key not in cfg["folder_mode"]:
                 raise ValueError(f"Missing folder_mode.{key}")
 
-        if not os.path.isdir(cfg["folder_mode"]["folder_path"]):
+        if not os.path.isdir(cfg["folder_mode"]["dir"]):
             raise FileNotFoundError(
-                f"folder_path does not exist: {cfg['folder_mode']['folder_path']}"
+                f"directory does not exist: {cfg['folder_mode']['dir']}"
             )
 
     else:  # list mode
-        required = ["list_dir", "list_glob"]
+        required = ["dir", "file_type"]
 
         for key in required:
             if key not in cfg["list_mode"]:
                 raise ValueError(f"Missing list_mode.{key}")
 
-        if not os.path.isdir(cfg["list_mode"]["list_dir"]):
+        if not os.path.isdir(cfg["list_mode"]["dir"]):
             raise FileNotFoundError(
-                f"list_dir does not exist: {cfg['list_mode']['list_dir']}"
+                f"directory does not exist: {cfg['list_mode']['dir']}"
             )
 
     return cfg
@@ -123,14 +123,14 @@ def load_config_detect(path):
         if key not in cfg:
             raise ValueError(f"Missing top-level key in config: {key}")
 
-    for key in ["model_path", "unknown_npz_dir", "output_dir"]:
+    for key in ["model_path", "npz_dir", "output_dir"]:
         if key not in cfg["paths"]:
             raise ValueError(f"Missing paths.{key} in config")
 
     if not os.path.exists(cfg["paths"]["model_path"]):
         raise FileNotFoundError(f"model_path does not exist: {cfg['paths']['model_path']}")
-    if not os.path.isdir(cfg["paths"]["unknown_npz_dir"]):
-        raise FileNotFoundError(f"unknown_npz_dir does not exist: {cfg['paths']['unknown_npz_dir']}")
+    if not os.path.isdir(cfg["paths"]["npz_dir"]):
+        raise FileNotFoundError(f"npz_dir does not exist: {cfg['paths']['npz_dir']}")
 
     os.makedirs(cfg["paths"]["output_dir"], exist_ok=True)
 
