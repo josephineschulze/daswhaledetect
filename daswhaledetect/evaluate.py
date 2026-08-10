@@ -41,7 +41,7 @@ def oob_predictions(rf_model, y_train, output_dir):
     return y_oob_true, y_oob_pred, oob_probs_valid, rf_classes
 
 
-def compute_confusion_matrices(y_true, y_pred, labels, output_dir, save_to_csv=True):
+def compute_confusion_matrices(y_true, y_pred, labels, output_dir, save_to_csv=True, title=None):
     """
     raw counts
     row-normalized (recall: % of each true class's
@@ -60,13 +60,13 @@ def compute_confusion_matrices(y_true, y_pred, labels, output_dir, save_to_csv=T
     col_pct = (cm_df.div(cm_df.sum(axis=0).replace(0, np.nan), axis=1) * 100).rename_axis("true_class", axis="index") # precision confusion matrix
 
     if save_to_csv:
-        cm_df.to_csv(os.path.join(output_dir, "rf_confusion_matrix_raw.csv"))
-        row_pct.to_csv(os.path.join(output_dir, "rf_confusion_matrix_row_normalized.csv"))
-        col_pct.to_csv(os.path.join(output_dir, "rf_confusion_matrix_col_normalized.csv"))
+        cm_df.to_csv(os.path.join(output_dir, f"{title}_confusion_matrix_raw.csv"))
+        row_pct.to_csv(os.path.join(output_dir, f"{title}_confusion_matrix_row_normalized.csv"))
+        col_pct.to_csv(os.path.join(output_dir, f"{title}_confusion_matrix_col_normalized.csv"))
 
     return cm_df, row_pct, col_pct
 
-def compute_per_class_metrics(cm_df, labels, output_dir, save_to_csv=True):
+def compute_per_class_metrics(cm_df, labels, output_dir, save_to_csv=True, title=None):
     """precision/recall/f1/support per class, computed directly from a raw confusion-matrix dataframe"""
     cm = cm_df.values
     class_metrics = {}
@@ -87,15 +87,27 @@ def compute_per_class_metrics(cm_df, labels, output_dir, save_to_csv=True):
         }
 
     if save_to_csv:
-        logger.info("OOB metrics by class:\n%s", pd.DataFrame(class_metrics).T.to_string())
-        metrics_path = os.path.join(output_dir, "rf_oob_class_metrics.csv")
+        logger.info("%s metrics by class:", title if title is not None else "Per-class")
+        logger.info("%-25s %10s %10s %10s %10s", "class", "recall", "precision", "f1_score", "support")
+
+        for class_name, metrics in class_metrics.items():
+            logger.info(
+                "%-25s %10.4f %10.4f %10.4f %10d",
+                class_name,
+                metrics["recall"],
+                metrics["precision"],
+                metrics["f1_score"],
+                metrics["support"],
+            )
+
+        metrics_path = os.path.join(output_dir, f"rf_{title if title is not None else 'per_class'}_class_metrics.csv")
         pd.DataFrame(class_metrics).T.rename_axis("class", axis="index").to_csv(metrics_path)
-        logger.info("Saved OOB metrics by class: %s", metrics_path)
+        logger.info("Saved %s metrics by class: %s", title if title is not None else "Per-class", metrics_path)
 
     
     return pd.DataFrame(class_metrics).T
 
-def compute_oob_average_precision(y_oob_true, oob_probs_valid, rf_classes, output_dir, save_to_csv=True):
+def compute_oob_average_precision(y_oob_true, oob_probs_valid, rf_classes, output_dir, save_to_csv=True, title=None):
     """
     per-class average precision from OOB probabilities (one-vs-rest), plus
     the macro average across classes. returns (ap_scores_dict, macro_ap)
@@ -112,7 +124,7 @@ def compute_oob_average_precision(y_oob_true, oob_probs_valid, rf_classes, outpu
 
     ap_df = pd.DataFrame(ap_scores, index=["average_precision"]).T.rename_axis("class", axis="index")
     if save_to_csv:
-        ap_df.to_csv(os.path.join(output_dir, "rf_oob_average_precision.csv"))
+        ap_df.to_csv(os.path.join(output_dir, f"rf_{title if title is not None else 'oob'}_average_precision.csv"))
 
     return ap_scores, macro_ap
 

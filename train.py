@@ -112,16 +112,16 @@ def run_training(cfg):
     os.makedirs(cf_dir, exist_ok=True)
     os.makedirs(metrics_dir, exist_ok=True)
     labels = sorted(np.unique(y_oob_true))
-    cm_df, row_pct, col_pct = compute_confusion_matrices(y_oob_true, y_oob_pred, labels, cf_dir, save_to_csv=True)
-    metrics_df = compute_per_class_metrics(cm_df, labels, metrics_dir, save_to_csv=True)
-    ap_scores, macro_ap = compute_oob_average_precision(y_oob_true, oob_probs_valid, rf_classes, metrics_dir, save_to_csv=True)
+    cm_df, row_pct, col_pct = compute_confusion_matrices(y_oob_true, y_oob_pred, labels, cf_dir, save_to_csv=True, title="OOB")
+    metrics_df = compute_per_class_metrics(cm_df, labels, metrics_dir, save_to_csv=True, title="OOB")
+    ap_scores, macro_ap = compute_oob_average_precision(y_oob_true, oob_probs_valid, rf_classes, metrics_dir, save_to_csv=True, title="OOB")
 
-    plot_confusion_matrix(row_pct, "Confusion Matrix (Row Normalized, OOB)", 
-                          os.path.join(cf_dir, "rf_confusion_matrix_row_normalized.png"))
-    plot_confusion_matrix(col_pct, "Confusion Matrix (Column Normalized, OOB)", 
-                          os.path.join(cf_dir, "rf_confusion_matrix_col_normalized.png"))
-    plot_confusion_matrix(cm_df, "Confusion Matrix (Raw Counts, OOB)", 
-                          os.path.join(cf_dir, "rf_confusion_matrix_raw.png"))
+    # plot_confusion_matrix(row_pct, "Confusion Matrix (Row Normalized, OOB)", 
+    #                       os.path.join(cf_dir, "rf_confusion_matrix_row_normalized.png"))
+    # plot_confusion_matrix(col_pct, "Confusion Matrix (Column Normalized, OOB)", 
+    #                       os.path.join(cf_dir, "rf_confusion_matrix_col_normalized.png"))
+    # plot_confusion_matrix(cm_df, "Confusion Matrix (Raw Counts, OOB)", 
+    #                       os.path.join(cf_dir, "rf_confusion_matrix_raw.png"))
 
 
     model_metadata = {

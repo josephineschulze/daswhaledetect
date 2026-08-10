@@ -89,10 +89,6 @@ def run_detection(cfg):
             filename_prefix=f"stack_segment_{sanitize_filename(seg_label)}_pred"
         )
 
-    #=======================================#
-    #==== TO DO FOR DATA WITH TRUE LABEL====#
-    #=======================================#
-
     # 4. evaluate against ground truth, if any labels are available
     unknown_pred_df = attach_true_labels(unknown_pred_df, cfg["label_mapping"])
     eval_df = build_eval_dataframe(unknown_pred_df, output_dir)
@@ -123,7 +119,7 @@ def run_detection(cfg):
         logger.info("%s", line)
 
     cm_raw_df, cm_row_norm_df, cm_col_norm_df = compute_confusion_matrices(y_true, y_pred, labels_for_eval, output_dir, save_to_csv=True)
-    eval_metrics_df = compute_per_class_metrics(cm_raw_df, labels_for_eval, output_dir, save_to_csv=False)
+    eval_metrics_df = compute_per_class_metrics(cm_raw_df, labels_for_eval, output_dir, save_to_csv=True)
     eval_metrics_df.to_csv(os.path.join(output_dir, "rf_eval_class_metrics.csv"))
 
     unknown_pred_df.to_csv(os.path.join(output_dir, "rf_window_predictions_with_truth.csv"), index=False)

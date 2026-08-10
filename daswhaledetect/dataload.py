@@ -419,15 +419,20 @@ def load_npz_dataset(
 
     logger.info("Loaded %d usable windows.", len(df))
     logger.info("Skipped %d NPZ files.", len(skipped))
-    logger.info(
-        "Grouped class counts after gating:\n%s",
-        df["CallType_grouped"].value_counts().to_string(),
-    )
 
-    logger.info(
-        "Raw class counts after gating:\n%s",
-        df["CallType_raw"].value_counts().to_string(),
-    )
+    logger.info("")
+    logger.info("Grouped class counts after gating:")
+    logger.info("%-25s %10s", "class", "n_windows")
+
+    for class_name, count in df["CallType_grouped"].value_counts().items():
+        logger.info("%-25s %10d", class_name, count)
+
+    logger.info("")
+    logger.info("Raw class counts after gating:")
+    logger.info("%-25s %10s", "class", "n_windows")
+    for class_name, count in df["CallType_raw"].value_counts().items():
+        logger.info("%-25s %10d", class_name, count)
+
 
     return df, skipped
 
@@ -449,15 +454,22 @@ def balance_classes(df, max_per_class, random_state=42, verbose=True):
         sampled_df = cls_df.sample(n=n_take, random_state=random_state)
         balanced_parts.append(sampled_df)
         if verbose:
-            print(f"\n{cls}: sampled {n_take} from {len(cls_df)} total")
-            print("Raw subclass counts in sample:")
-            print(sampled_df["CallType_raw"].value_counts())
+            logger.info("")
+            logger.info(f"Sampled {n_take} from {len(cls_df)} total for class '{cls}'")
+            logger.info("Raw subclass counts in sample:")
+            logger.info("%-25s %10s", "class", "n_windows")
+            for class_name, count in sampled_df["CallType_raw"].value_counts().items():
+                logger.info("%-25s %10d", class_name, count)
+            
 
     noise_df = df[df["CallType_grouped"] == "noise"].copy()
     if len(noise_df) > 0:
         if verbose:
-            print("\nRaw noise subclass counts before balancing:")
-            print(noise_df["CallType_raw"].value_counts())
+            logger.info("")
+            logger.info("Raw noise subclass counts before balancing:")
+            logger.info("%-25s %10s", "class", "n_windows")
+            for class_name, count in noise_df["CallType_raw"].value_counts().items():
+                logger.info("%-25s %10d", class_name, count)
 
         noise_counts = noise_df["CallType_raw"].value_counts()
         n_take_per_noise_subclass = min(noise_counts.min(), max_per_class // len(noise_counts))
@@ -471,9 +483,12 @@ def balance_classes(df, max_per_class, random_state=42, verbose=True):
         balanced_parts.append(balanced_noise_df)
 
         if verbose:
-            print(f"\nSelected {n_take_per_noise_subclass} samples from each noise subtype")
-            print("Balanced noise subclass counts used:")
-            print(balanced_noise_df["CallType_raw"].value_counts())
+            logger.info("")
+            logger.info("Selected %d samples from each noise subtype", n_take_per_noise_subclass)
+            logger.info("Balanced noise subclass counts used:")
+            logger.info("%-25s %10s", "class", "n_windows")
+            for class_name, count in balanced_noise_df["CallType_raw"].value_counts().items():
+                logger.info("%-25s %10d", class_name, count)
 
     train_df = pd.concat(balanced_parts, axis=0).sample(frac=1, random_state=random_state).reset_index(drop=True)
     logger.info(
@@ -486,10 +501,11 @@ def balance_classes(df, max_per_class, random_state=42, verbose=True):
         len(train_df),
     )
 
-    logger.info(
-        "Balanced grouped class counts:\n%s",
-        train_df["CallType_grouped"].value_counts().to_string(),
-    )
+    logger.info("")
+    logger.info("Balanced grouped class counts:")
+    logger.info("%-25s %10s", "class", "n_windows")
+    for class_name, count in train_df["CallType_grouped"].value_counts().items():
+        logger.info("%-25s %10d", class_name, count)
 
 
     return train_df
