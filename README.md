@@ -11,10 +11,10 @@ conda create --name daswhaledetect python=3.10
 conda activate daswhaledetect
 ```
 
-Install the required Python packages:
+Install the package and its dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 
@@ -71,7 +71,7 @@ Each annotation CSV should follow the format of `example.csv`:
 Please specify `mode` and corresponding input / output directory at first. Then run:
 
 ```bash
-python preprocess.py --config configs/preprocessing_folder.yaml
+python scripts/preprocess.py --config configs/preprocessing.yaml
 ```
 
 
@@ -80,7 +80,7 @@ python preprocess.py --config configs/preprocessing_folder.yaml
 Please specify `npz_dir` and `output_dir` at first and make sure to run training only with npz files extracted with `list` mode. Run:
 
 ```bash
-python train.py --config configs/train.yaml
+python scripts/train.py --config configs/train.yaml
 ```
 
 ## Stage 3: Detection
@@ -88,5 +88,5 @@ python train.py --config configs/train.yaml
 Please specify `model_path`, `npz_dir`, and `output_dir` at first, then run:
 
 ```bash
-python detect.py --config configs/detect.yaml
+python scripts/detect.py --config configs/detect.yaml
 ```
